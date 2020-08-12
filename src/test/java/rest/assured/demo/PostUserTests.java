@@ -1,6 +1,7 @@
 package rest.assured.demo;
 
 import com.google.gson.JsonObject;
+import io.restassured.http.ContentType;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -35,5 +36,64 @@ public class PostUserTests extends BaseClass {
                 { "name", "userName" },
                 { "name", "userName", "email" },
                 { "name", "userName", "email", "phone" }};
+    }
+
+    @Test(priority = 2)
+    public void postNewUserJSONSuccess() {
+        JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("email", "oleg.mykulskyi@accenture.com");
+            jsonObject.addProperty("name", "Oleg Mykulskyi");
+            jsonObject.addProperty("phone", "+37120300655");
+            jsonObject.addProperty("userName", "oleg.mykulskyi");
+            jsonObject.addProperty("website", "https://my.accenture.lv/users/oleg_mykulskyi");
+
+        given().spec(requestSpecifications.buildRequestSpecificationForJsonRequest())
+                .body(jsonObject).when().post("api/user")
+                .then().spec(responseSpecifications.buildJsonResponseSpecification(201));
+    }
+
+    @Test(priority = 3)
+    public void postDuplicatedUserNegative() {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("email", "oleg.mykulskyi@accenture.com");
+        jsonObject.addProperty("name", "Oleg Mykulskyi");
+        jsonObject.addProperty("phone", "+37120300655");
+        jsonObject.addProperty("userName", "oleg.mykulskyi");
+        jsonObject.addProperty("website", "https://my.accenture.lv/users/oleg_mykulskyi");
+
+        given().spec(requestSpecifications.buildRequestSpecificationForJsonRequest())
+                .body(jsonObject).when().post("api/user")
+                .then().spec(responseSpecifications.buildJsonResponseSpecification(400))
+                .body("exception", equalTo("DublicateUserNameException"))
+                .body("message", equalTo("User with current username allready exists. Username: oleg.mykulskyi"));
+    }
+
+    @Test(priority = 4)
+    public void postUserWithMissingPropertiesNegative() {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("email", "amelia.mykulska@accenture.com");
+        jsonObject.addProperty("name", "Amelia Mykulska");
+
+        given().spec(requestSpecifications.buildRequestSpecificationForJsonRequest())
+                .body(jsonObject).when().post("api/user")
+                .then().spec(responseSpecifications.buildJsonResponseSpecification(400))
+                .body("exception", equalTo("InvalidUserDataException"))
+                .body("message", equalTo("Incorrect user. Please validate if all mandatory data is filled."));
+    }
+
+    @Test(priority = 5)
+    public void postNewUserXMLSuccess() {
+        String xmlString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+        "<newUser>" +
+                "<name>Oleg Mykulskyi XML</name>" +
+                "<userName>oleg.mykulskyi XML</userName>" +
+                "<email>oleg.mykulskyi@accenture.com</email>" +
+                "<phone>+37120300655</phone>" +
+                "<website>https://my.accenture.lv/users/oleg_mykulskyi</website>" +
+        "</newUser>";
+
+        given().contentType(ContentType.XML).and()
+                .body(xmlString).when().post("api/user")
+                .then().spec(responseSpecifications.buildJsonResponseSpecification(201));
     }
 }

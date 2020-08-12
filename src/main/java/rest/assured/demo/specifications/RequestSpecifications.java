@@ -23,6 +23,15 @@ public class RequestSpecifications {
         return requestSpec;
     }
 
+    public RequestSpecification buildSimpleRequestSpecificationForTxtRequest() {
+        requestSpec = setBaseUrl()
+                .setContentType(ContentType.TEXT)
+                .log(LogDetail.ALL)
+                .build();
+
+        return requestSpec;
+    }
+
     public RequestSpecification buildRequestSpecificationForXmlRequest() {
         requestSpec = setBaseUrl()
                 .setAccept(ContentType.XML)

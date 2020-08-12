@@ -21,6 +21,13 @@ public class ResponseSpecifications {
         return responseSpec;
     }
 
+    public ResponseSpecification buildNoContentResponseSpecification(int statusCodeExpected) {
+        responseSpec = responseSpecBuilder.expectStatusCode(statusCodeExpected)
+                .log(LogDetail.ALL)
+                .build();
+        return responseSpec;
+    }
+
     public ResponseSpecification build200XmlResponseSpecification(int statusCodeExpected) {
         responseSpec = responseSpecBuilder.expectStatusCode(statusCodeExpected)
                 .expectContentType(ContentType.XML)
