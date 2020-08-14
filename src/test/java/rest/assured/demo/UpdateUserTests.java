@@ -144,7 +144,6 @@ public class UpdateUserTests extends BaseClass {
                 .body("message", equalTo("User not found. User name: oleg.mykul"));
     }
 
-    //To execute this test successfully you need to have appropriate conditions when user doesn't have address info
     @Test(priority = 11)
     public void addAddressGeoToNonexistentAddressJSON() {
         JsonObject jsonObject = new JsonObject();
@@ -171,6 +170,8 @@ public class UpdateUserTests extends BaseClass {
                 .then().spec(responseSpecifications.buildNoContentResponseSpecification(204));
     }
 
+
+    //To get success result user should have assigned company, address and Geo data
     @Test(priority = 13)
     public void assignTodoSuccess() {
 
@@ -179,7 +180,16 @@ public class UpdateUserTests extends BaseClass {
                 .then().spec(responseSpecifications.buildNoContentResponseSpecification(204));
     }
 
+    //To get success result user should have assigned company, address and Geo data
     @Test(priority = 14)
+    public void assignTodoForXMLUserSuccess() {
+
+        given().spec(requestSpecifications.buildRequestSpecificationForJsonRequest())
+                .when().put("/api/user/oleg.mykulskyi XML/assignTodo/2")
+                .then().spec(responseSpecifications.buildNoContentResponseSpecification(204));
+    }
+
+    @Test(priority = 15)
     public void assignTodoWrongUserNegative() {
 
         given().spec(requestSpecifications.buildRequestSpecificationForJsonRequest())
@@ -189,7 +199,7 @@ public class UpdateUserTests extends BaseClass {
                 .body("message", equalTo("User not found. User name: oleg.mykul"));
     }
 
-    @Test(priority = 15)
+    @Test(priority = 16)
     public void assignTodoIdNotFoundNegative() {
 
         given().spec(requestSpecifications.buildRequestSpecificationForJsonRequest())
@@ -199,17 +209,17 @@ public class UpdateUserTests extends BaseClass {
                 .body("message", equalTo("Todo with this id: 999 not found."));
     }
 
-    @Test(priority = 16)
+    @Test(priority = 17)
     public void addStatusForTodoSuccess() {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("status", "In progress");
 
         given().spec(requestSpecifications.buildRequestSpecificationForJsonRequest())
                 .body(jsonObject).when().put("/api/todo/1")
-                .then().spec(responseSpecifications.buildJsonResponseSpecification(204));
+                .then().spec(responseSpecifications.buildNoContentResponseSpecification(204));
     }
 
-    @Test(priority = 17)
+    @Test(priority = 18)
     public void addStatusForUnexistingTodoNegative() {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("status", "In progress");
@@ -221,11 +231,11 @@ public class UpdateUserTests extends BaseClass {
                 .body("message", equalTo("Todo with this id: 999 not found."));
     }
 
-    @Test(priority = 18)
+    @Test(priority = 19)
     public void addStatusForXMLSuccess() {
         String xmlString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<TodoStatusChangeRequest>" +
-                "<status>Done</status>" +
+                "<status>In progress</status>" +
                 "</TodoStatusChangeRequest>";
 
         given().contentType(ContentType.XML).and()

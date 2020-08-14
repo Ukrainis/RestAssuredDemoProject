@@ -137,7 +137,7 @@ public class PostUserTests extends BaseClass {
                     "<title>TaskXML</title>" +
                 "</Todo>";
 
-        given().spec(requestSpecifications.buildRequestSpecificationForXmlRequest())
+        given().contentType(ContentType.XML).and()
                 .body(xmlString).when().post("/api/todo")
                 .then().spec(responseSpecifications.buildNoContentResponseSpecification(201));
     }
