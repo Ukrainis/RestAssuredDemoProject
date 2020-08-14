@@ -96,4 +96,50 @@ public class PostUserTests extends BaseClass {
                 .body(xmlString).when().post("api/user")
                 .then().spec(responseSpecifications.buildJsonResponseSpecification(201));
     }
+
+    @Test(priority = 6)
+    public void createNewTodoSuccess() {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("title", "TaskJSON");
+
+        given().spec(requestSpecifications.buildRequestSpecificationForJsonRequest())
+                .body(jsonObject).when().post("/api/todo")
+                .then().spec(responseSpecifications.buildNoContentResponseSpecification(201));
+    }
+
+    @Test(priority = 7)
+    public void createTodoWithExistingTitleNegative() {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("title", "TaskJSON");
+
+        given().spec(requestSpecifications.buildRequestSpecificationForJsonRequest())
+                .body(jsonObject).when().post("/api/todo")
+                .then().spec(responseSpecifications.buildJsonResponseSpecification(400))
+                .body("exception", equalTo("DublicatedTodoException"))
+                .body("message", equalTo("This todo already exists: In progress"));
+    }
+
+    @Test(priority = 8)
+    public void createTodoWithWrongFormatNegative() {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("title", "TaskExtra");
+        jsonObject.addProperty("status", "In progress");
+
+        given().spec(requestSpecifications.buildRequestSpecificationForJsonRequest())
+                .body(jsonObject).when().post("/api/todo")
+                .then().spec(responseSpecifications.buildJsonResponseSpecification(400));
+    }
+
+    @Test(priority = 9)
+    public void createNewTodoXMLSuccess() {
+        String xmlString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                "<Todo>" +
+                    "<title>TaskXML</title>" +
+                "</Todo>";
+
+        given().spec(requestSpecifications.buildRequestSpecificationForXmlRequest())
+                .body(xmlString).when().post("/api/todo")
+                .then().spec(responseSpecifications.buildNoContentResponseSpecification(201));
+    }
+
 }

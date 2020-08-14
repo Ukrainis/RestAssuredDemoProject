@@ -1,5 +1,7 @@
 package rest.assured.demo;
 
+import com.google.gson.JsonObject;
+import io.restassured.http.ContentType;
 import org.testng.annotations.Test;
 import static io.restassured.RestAssured.given;
 
@@ -60,5 +62,12 @@ public class GetUsersTests extends BaseClass {
                 .spec(requestSpecifications.buildRequestSpecificationForJsonRequest())
                 .when().get("/api/todos")
                 .then().spec(responseSpecifications.buildJsonResponseSpecification(200));
+    }
+
+    @Test(priority = 8)
+    public void authenticationRequestSuccess() {
+        given().header("Auth-Key", "123456789").spec(requestSpecifications.buildRequestSpecificationForJsonRequest())
+                .when().get("/api/authenticatedResource")
+                .then().statusCode(200);
     }
 }
