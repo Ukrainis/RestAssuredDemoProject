@@ -9,22 +9,25 @@ public class ResponseSpecifications {
     private ResponseSpecification responseSpec;
     private ResponseSpecBuilder responseSpecBuilder;
 
-    public ResponseSpecifications() {
-        responseSpecBuilder = new ResponseSpecBuilder();
-    }
-
     public ResponseSpecification buildJsonResponseSpecification(int statusCodeExpected) {
-        responseSpec = responseSpecBuilder.expectStatusCode(statusCodeExpected)
+        responseSpec = buildNewResponseBuilder().expectStatusCode(statusCodeExpected)
                 .expectContentType(ContentType.JSON)
                 .log(LogDetail.ALL)
                 .build();
         return responseSpec;
     }
 
-    public ResponseSpecification build200XmlResponseSpecification(int statusCodeExpected) {
-        responseSpec = responseSpecBuilder.expectStatusCode(statusCodeExpected)
+    public ResponseSpecification buildXmlResponseSpecification(int statusCodeExpected) {
+        responseSpec = buildNewResponseBuilder().expectStatusCode(statusCodeExpected)
                 .expectContentType(ContentType.XML)
+                .log(LogDetail.ALL)
                 .build();
         return responseSpec;
+    }
+
+    private ResponseSpecBuilder buildNewResponseBuilder() {
+        responseSpecBuilder = null;
+        responseSpecBuilder = new ResponseSpecBuilder();
+        return responseSpecBuilder;
     }
 }

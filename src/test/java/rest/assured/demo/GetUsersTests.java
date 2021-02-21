@@ -18,6 +18,6 @@ public class GetUsersTests extends BaseClass {
         given()
                 .spec(requestSpecifications.buildRequestSpecificationForXmlRequest())
                 .when().get("/api/users")
-                .then().spec(responseSpecifications.build200XmlResponseSpecification(200));
+                .then().spec(responseSpecifications.buildXmlResponseSpecification(200));
     }
 }

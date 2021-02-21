@@ -4,19 +4,21 @@ import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
+import rest.assured.demo.config.RestConfig;
 import rest.assured.demo.utils.PropertiesUtils;
 
 public class RequestSpecifications {
     private RequestSpecification requestSpec;
-    private RequestSpecBuilder requestSpecBuilder;
+    private RestConfig config;
 
     public RequestSpecifications() {
-        requestSpecBuilder = new RequestSpecBuilder();
+        config = new RestConfig();
     }
 
     public RequestSpecification buildRequestSpecificationForJsonRequest() {
         requestSpec = setBaseUrl()
                 .setContentType(ContentType.JSON)
+                .setAccept(ContentType.JSON)
                 .log(LogDetail.ALL)
                 .build();
 
@@ -25,6 +27,7 @@ public class RequestSpecifications {
 
     public RequestSpecification buildRequestSpecificationForXmlRequest() {
         requestSpec = setBaseUrl()
+                .setContentType(ContentType.XML)
                 .setAccept(ContentType.XML)
                 .log(LogDetail.ALL)
                 .build();
@@ -32,9 +35,23 @@ public class RequestSpecifications {
         return requestSpec;
     }
 
+    public RequestSpecification buildRequestSpecificationsForEmptyRequest() {
+        requestSpec = null;
+        requestSpec = setBaseUrl()
+                .setConfig(config.getDefaultConfig())
+                .log(LogDetail.ALL)
+                .build();
+
+        return requestSpec;
+    }
+
     private RequestSpecBuilder setBaseUrl() {
-        return requestSpecBuilder.setBaseUri(PropertiesUtils.getPropertyValueByKey("baseUrl"))
+        return buildNewRequestSpecBuilder().setBaseUri(PropertiesUtils.getPropertyValueByKey("baseUrl"))
                     .setPort(Integer.parseInt(PropertiesUtils.getPropertyValueByKey("port")));
+    }
+
+    private RequestSpecBuilder buildNewRequestSpecBuilder() {
+        return new RequestSpecBuilder();
     }
 
 }
