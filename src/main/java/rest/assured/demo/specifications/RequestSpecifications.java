@@ -46,8 +46,7 @@ public class RequestSpecifications {
     }
 
     private RequestSpecBuilder setBaseUrl() {
-        return buildNewRequestSpecBuilder().setBaseUri(PropertiesUtils.getPropertyValueByKey("baseUrl"))
-                    .setPort(Integer.parseInt(PropertiesUtils.getPropertyValueByKey("port")));
+        return buildNewRequestSpecBuilder().setBaseUri(PropertiesUtils.getPropertyValueByKey("baseUrl"));
     }
 
     private RequestSpecBuilder buildNewRequestSpecBuilder() {
